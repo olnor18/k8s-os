@@ -1,0 +1,11 @@
+#!/bin/bash
+
+mkdir /sysroot
+# Borrowed from mukube: https://github.com/distributed-technologies/mukube/blob/5fbf6668efccf8826366f0a665d6752ff8ab6403/meta-k8s-setup/recipes-core/initrdscripts/initramfs-framework/ramrootfs#L12
+mount -t tmpfs -o size=90% tmpfs /sysroot
+
+tar -C / --exclude=sysroot -cf - . | tar -C /sysroot/ -xf -
+
+# https://systemd.io/INITRD_INTERFACE/
+ln -s /etc/os-release /etc/initrd-release
+exec /lib/systemd/systemd
