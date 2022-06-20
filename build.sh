@@ -55,15 +55,22 @@ unified_kernel_image() {
 }
 
 image() {
-  truncate -s "2G" "debian.img"
+  truncate -s "512M" "debian.img"
   sgdisk --align-end \
     --clear \
-    --new 0:0:+1G --typecode=0:ef00 \
-    --new 0:0:0 --typecode=0:ef00 debian.img
+    --new 0:0:+0 --typecode=0:ef00 \
+    debian.img
 
-  mkfs.fat -v --offset 2048 debian.img $((1024*1024))
-  mmd -i debian.img@@$((2048*512)) ::/EFI ::/EFI/BOOT
-  mcopy -i debian.img@@$((2048*512)) debian.efi ::/EFI/BOOT/BOOTx64.EFI
+  local json sector_size offset block_count
+  json="$(sfdisk --json debian.img)"
+  sector_size="$(jq .partitiontable.sectorsize <<< "${json}")"
+  offset="$(jq .partitiontable.partitions[0].start <<< "${json}")"
+  block_count="$(jq .partitiontable.partitions[0].size <<< "${json}")"
+  block_count="$((block_count*sector_size/1024))"
+
+  mkfs.fat --offset "${offset}" debian.img "${block_count}"
+  mmd -i debian.img@@$((offset*sector_size)) ::/EFI ::/EFI/BOOT
+  mcopy -i debian.img@@$((offset*sector_size)) debian.efi ::/EFI/BOOT/BOOTx64.EFI
 }
 
 main() {
