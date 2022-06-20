@@ -1,4 +1,2 @@
-/debian/
-/debian.efi
-/debian.img
-/initrd.img
+/tmp/
+/output/
