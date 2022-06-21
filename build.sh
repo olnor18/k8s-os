@@ -6,8 +6,11 @@ readonly tmpdir="$(mktemp --dry-run --directory --tmpdir="${PWD}/tmp")"
 trap "rm -rf \"${tmpdir}\"" EXIT
 
 chroot() {
+  mv debian/etc/resolv.conf{,.org}
+  cp -L /etc/resolv.conf debian/etc/resolv.conf
   # shellcheck disable=SC2016
   command chroot debian /bin/bash -c 'source /etc/profile; exec $0 "$@"' "$@"
+  mv debian/etc/resolv.conf{.org,}
 }
 
 init() {
@@ -34,9 +37,6 @@ misc() {
   rm debian/{etc/machine-id,var/lib/dbus/machine-id}
   ln -sf /run/systemd/resolve/stub-resolv.conf debian/etc/resolv.conf
   echo debian > debian/etc/hostname
-
-  chroot passwd -d root
-  chroot apt-get clean
 }
 
 unified_kernel_image() {
@@ -73,15 +73,34 @@ image() {
   mcopy -i debian.img@@$((offset*sector_size)) debian.efi ::/EFI/BOOT/BOOTx64.EFI
 }
 
+prod() {
+  true
+}
+
+dev() {
+  chroot passwd -d root
+  chroot apt-get install -y nano tmux htop
+}
+
 main() {
   init
   bootstrap
   k8s
   misc
-  unified_kernel_image
-  image
 
-  cp -a --reflink=auto debian.efi debian.img "${output}"
+  for image_type in {prod,dev}; do
+    cp -ar debian{,.copy}
+    ${image_type}
+    chroot apt-get clean
+
+    unified_kernel_image
+    image
+    mv debian.efi "${output}/k8s-os-${image_type}.efi"
+    mv debian.img "${output}/k8s-os-${image_type}.img"
+
+    rm -rf debian
+    mv debian{.copy,}
+  done
 }
 
 main
