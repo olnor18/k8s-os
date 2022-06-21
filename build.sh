@@ -35,7 +35,10 @@ k8s() {
 
 misc() {
   cp "${orig_pwd}/files/init" debian/
+  cp -r "${orig_pwd}/files/misc/"* debian/
   cp -r "${orig_pwd}/files/mukube-configurator/"* debian/
+  # Required by zap-ceph-disks.service
+  chroot apt-get install -y --no-install-recommends gdisk
 
   rm debian/{etc/machine-id,var/lib/dbus/machine-id}
   ln -sf /run/systemd/resolve/stub-resolv.conf debian/etc/resolv.conf
