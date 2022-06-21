@@ -56,8 +56,7 @@ unified_kernel_image() {
 
 image() {
   truncate -s "512M" "debian.img"
-  sgdisk --align-end \
-    --clear \
+  sgdisk --clear \
     --new 0:0:+0 --typecode=0:ef00 \
     debian.img
 
