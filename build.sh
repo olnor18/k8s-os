@@ -102,10 +102,12 @@ main() {
 
     unified_kernel_image
     image
+    chroot dpkg-query --showformat='${Package} ${Version}\n' -W > packages.txt
     mv debian.efi "${output}/k8s-os-${image_type}.efi"
     mv debian.img "${output}/k8s-os-${image_type}.img"
+    mv packages.txt "${output}/k8s-os-${image_type}-packages.txt"
     if [[ -n ${SUDO_UID:-} ]] && [[ -n ${SUDO_GID:-} ]]; then
-      chown "${SUDO_UID}:${SUDO_GID}" "${output}/k8s-os-${image_type}."{efi,img}
+      chown "${SUDO_UID}:${SUDO_GID}" "${output}/k8s-os-${image_type}"{.efi,.img,-packages.txt}
     fi
 
     rm -rf debian
