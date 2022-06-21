@@ -15,6 +15,9 @@ chroot() {
 
 init() {
   mkdir -p "${output}" "${tmpdir}"
+  if [[ -n ${SUDO_UID:-} ]] && [[ -n ${SUDO_GID:-} ]]; then
+    chown "${SUDO_UID}:${SUDO_GID}" "${output}" "tmp"
+  fi
   cd "${tmpdir}"
 }
 
@@ -82,6 +85,11 @@ dev() {
 }
 
 main() {
+  if (( EUID != 0 )); then
+    echo "Please run as root"
+    exit 1
+  fi
+
   init
   bootstrap
   k8s
@@ -96,6 +104,9 @@ main() {
     image
     mv debian.efi "${output}/k8s-os-${image_type}.efi"
     mv debian.img "${output}/k8s-os-${image_type}.img"
+    if [[ -n ${SUDO_UID:-} ]] && [[ -n ${SUDO_GID:-} ]]; then
+      chown "${SUDO_UID}:${SUDO_GID}" "${output}/k8s-os-${image_type}."{efi,img}
+    fi
 
     rm -rf debian
     mv debian{.copy,}
