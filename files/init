@@ -1,4 +1,9 @@
 #!/bin/bash
+# pivot_root, used by most container runtimes for security, isn't supported in the "rootfs"[1]:
+# "The rootfs (initial ramfs) cannot be pivot_root()ed."[2], so the fs must be copied to a new fs,
+# which this script does.
+# [1] https://www.kernel.org/doc/html/v5.18/filesystems/ramfs-rootfs-initramfs.html#what-is-rootfs
+# [2] https://man.archlinux.org/man/pivot_root.2.en
 
 mkdir /sysroot
 # Borrowed from mukube: https://github.com/distributed-technologies/mukube/blob/5fbf6668efccf8826366f0a665d6752ff8ab6403/meta-k8s-setup/recipes-core/initrdscripts/initramfs-framework/ramrootfs#L12
