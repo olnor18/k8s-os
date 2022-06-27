@@ -10,12 +10,14 @@ The built images can be tested with QEMU like so:
 
 Testing the EFI binary:
 ```sh
-$ qemu-system-x86_64 -machine accel=kvm:tcg -smp 4 -m 4096 -bios /usr/share/edk2-ovmf/x64/OVMF_CODE.fd -kernel output/k8s-os-dev.efi -monitor none -serial mon:stdio -nographic
+$ mkfs.ext4 -L config config.ext4 1M
+$ qemu-system-x86_64 -machine accel=kvm:tcg -smp 4 -m 4096 -bios /usr/share/edk2-ovmf/x64/OVMF_CODE.fd -kernel output/k8s-os-dev.efi -drive file=config.ext4,format=raw -monitor none -serial mon:stdio -nographic
 ```
 
 Testing the image:
 ```sh
-$ qemu-system-x86_64 -machine accel=kvm:tcg -smp 4 -m 4096 -bios /usr/share/edk2-ovmf/x64/OVMF_CODE.fd -drive file=output/k8s-os-dev.img,format=raw -monitor none -serial mon:stdio -nographic
+$ mkfs.ext4 -L config config.ext4 1M
+$ qemu-system-x86_64 -machine accel=kvm:tcg -smp 4 -m 4096 -bios /usr/share/edk2-ovmf/x64/OVMF_CODE.fd -drive file=output/k8s-os-dev.img,format=raw -drive file=config.ext4,format=raw -monitor none -serial mon:stdio -nographic
 ```
 
 Please use `/usr/share/OVMF/OVMF_CODE.fd` as `-bios` on Debian-based distributions.
