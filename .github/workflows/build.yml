@@ -1,0 +1,36 @@
+name: Build
+
+on:
+  push:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+    inputs:
+      release:
+        description: Release
+        default: false
+        required: false
+        type: boolean
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Build
+        # Fake a TTY
+        run: script -q -e -c "make"
+
+      - name: Generate release tag
+        id: tag
+        run: echo "::set-output name=release_tag::$(date +%Y%m%d).${GITHUB_RUN_NUMBER}"
+        if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.release) }}
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.tag.outputs.release_tag }}
+          files: output/*
+        if: ${{ steps.tag.outcome == 'success' }}

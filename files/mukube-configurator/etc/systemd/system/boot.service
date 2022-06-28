@@ -1,0 +1,11 @@
+[Unit]
+Description=boot service for booting the host platform
+ConditionPathExists=/boot.sh
+After=crio.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /boot.sh
+
+[Install]
+WantedBy=multi-user.target

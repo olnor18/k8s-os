@@ -1,0 +1,8 @@
+[Unit]
+StopWhenUnneeded=true
+
+[Mount]
+Where=/mnt
+What=/dev/disk/by-label/config
+Type=ext4
+Options=defaults

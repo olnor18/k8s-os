@@ -1,0 +1,11 @@
+[Unit]
+Description=service that unpacks the configuration files
+RequiresMountsFor=/mnt
+Before=initrd.target
+
+[Service]
+ExecStart=tar -xf /mnt/config.tar --no-same-owner -v -C /sysroot
+Type=oneshot
+
+[Install]
+WantedBy=initrd.target

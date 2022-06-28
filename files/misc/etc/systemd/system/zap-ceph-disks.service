@@ -1,0 +1,13 @@
+[Unit]
+Description=zap ceph disks
+DefaultDependencies=no
+Conflicts=shutdown.target
+After=local-fs.target
+Before=sysinit.target shutdown.target
+
+[Service]
+Type=oneshot
+ExecStart=bash -c 'set -o errexit; udevadm settle; for DISK in $$(lsblk -p -o NAME,FSTYPE | grep LVM2_member | awk \'{print $$1}\'); do wipefs --all $$DISK; sgdisk --zap-all $$DISK; dd if=/dev/zero of=$$DISK bs=1M count=10; sync; done'
+
+[Install]
+WantedBy=sysinit.target
