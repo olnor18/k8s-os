@@ -28,7 +28,7 @@ If updating k8s/CRI-O is desired, the newest documentation for updating Debian-b
 
 Files required by k8s and CRI-O must be dropped in [`files/k8s/`](files/k8s/) and [`files/cri-o/`](files/cri-o/) respectively and the `k8s` function in `build.sh` must be tweaked if needed.
 
-For k8s/CRI-O v1.24 the following documentation was followed:
-* https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl (please use this [link](https://v1-24.docs.kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl) when k8s v1.25 has been released)
-* https://kubernetes.io/docs/setup/production-environment/container-runtimes/#forwarding-ipv4-and-letting-iptables-see-bridged-traffic (please use this [link](https://v1-24.docs.kubernetes.io/docs/setup/production-environment/container-runtimes/#forwarding-ipv4-and-letting-iptables-see-bridged-traffic) when k8s v1.25 has been released)
-* https://github.com/cri-o/cri-o/blob/v1.24.0/install.md#apt-based-operating-systems
+For k8s/CRI-O v1.25 the following documentation was followed:
+* https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl (please use this [link](https://v1-25.docs.kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl) when k8s v1.26 has been released)
+* https://kubernetes.io/docs/setup/production-environment/container-runtimes/#forwarding-ipv4-and-letting-iptables-see-bridged-traffic (please use this [link](https://v1-25.docs.kubernetes.io/docs/setup/production-environment/container-runtimes/#forwarding-ipv4-and-letting-iptables-see-bridged-traffic) when k8s v1.26 has been released)
+* https://github.com/cri-o/cri-o/blob/v1.25.0/install.md#apt-based-operating-systems
