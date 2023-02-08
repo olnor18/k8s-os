@@ -102,7 +102,7 @@ prod() {
 # Dev image
 dev() {
   chroot passwd -d root
-  chroot apt-get install -y nano tmux htop
+  chroot apt-get install -y nano tmux htop openssh-server iputils-ping curl
 }
 
 main() {
